@@ -3,26 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estructuras Metálicas Oscar</title>
-    <!-- Tailwind CSS para el diseño rápido y moderno -->
+    <title>El Buen Sabor | Comida Rica y Rápida</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome para los iconos -->
+    <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        sans: ['Poppins', 'sans-serif'],
                     },
                     colors: {
-                        industrial: {
-                            900: '#1a1d20',
-                            800: '#212529',
-                            700: '#343a40',
-                            accent: '#f97316' // Naranja vibrante para construcción
+                        brand: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            500: '#f97316', // Naranja apetitoso
+                            600: '#ea580c',
+                            900: '#7c2d12',
                         }
                     }
                 }
@@ -30,347 +31,265 @@
         }
     </script>
     <style>
-        /* Estilos adicionales personalizados */
-        .hero-bg {
-            background-image: linear-gradient(rgba(26, 29, 32, 0.85), rgba(26, 29, 32, 0.85)), url('https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+        /* Pequeñas animaciones CSS */
+        .food-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
-        .service-card:hover {
-            transform: translateY(-5px);
-            transition: all 0.3s ease;
-            border-bottom: 4px solid #f97316;
+        .food-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Notificación flotante */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
+            z-index: 100;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s, bottom 0.3s;
+        }
+        #toast.show {
+            visibility: visible;
+            opacity: 1;
+            bottom: 50px;
         }
     </style>
 </head>
-<body class="font-sans bg-gray-50 text-gray-800 antialiased selection:bg-industrial-accent selection:text-white">
+<body class="font-sans bg-gray-50 text-gray-800">
 
     <!-- Navegación -->
-    <nav class="bg-industrial-900 text-white fixed w-full z-50 shadow-lg border-b border-gray-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
+    <nav class="bg-white shadow-sm fixed w-full z-50 top-0">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
-                <div class="flex-shrink-0 flex items-center gap-3">
-                    <i class="fa-solid fa-helmet-safety text-industrial-accent text-3xl"></i>
-                    <div>
-                        <h1 class="font-bold text-2xl tracking-wider uppercase text-white">Oscar</h1>
-                        <p class="text-xs text-gray-400 tracking-widest uppercase">Estructuras Metálicas</p>
-                    </div>
-                </div>
+                <a href="#" class="flex items-center gap-2 text-brand-600">
+                    <i class="fa-solid fa-utensils text-2xl"></i>
+                    <span class="font-bold text-xl tracking-tight">El Buen Sabor</span>
+                </a>
                 
-                <!-- Menú de Escritorio -->
+                <!-- Enlaces Desktop -->
                 <div class="hidden md:flex space-x-8 items-center">
-                    <a href="#inicio" class="hover:text-industrial-accent transition-colors font-semibold">Inicio</a>
-                    <a href="#nosotros" class="hover:text-industrial-accent transition-colors font-semibold">Nosotros</a>
-                    <a href="#servicios" class="hover:text-industrial-accent transition-colors font-semibold">Servicios</a>
-                    <a href="#proyectos" class="hover:text-industrial-accent transition-colors font-semibold">Proyectos</a>
-                    <a href="#contacto" class="bg-industrial-accent text-white px-5 py-2 rounded-md font-bold hover:bg-orange-600 transition-colors">Cotizar ahora</a>
+                    <a href="#inicio" class="text-gray-600 hover:text-brand-500 font-medium transition">Inicio</a>
+                    <a href="#menu" class="text-gray-600 hover:text-brand-500 font-medium transition">Nuestro Menú</a>
+                    <a href="#ubicacion" class="text-gray-600 hover:text-brand-500 font-medium transition">Ubicación</a>
                 </div>
 
-                <!-- Botón Menú Móvil -->
-                <div class="md:hidden flex items-center">
-                    <button id="mobile-menu-btn" class="text-gray-300 hover:text-white focus:outline-none">
+                <!-- Carrito y Botón Móvil -->
+                <div class="flex items-center gap-4">
+                    <button class="relative p-2 text-gray-600 hover:text-brand-500 transition">
+                        <i class="fa-solid fa-basket-shopping text-xl"></i>
+                        <span id="cart-count" class="absolute top-0 right-0 bg-brand-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center transform translate-x-1 -translate-y-1">0</span>
+                    </button>
+                    
+                    <button id="mobile-menu-btn" class="md:hidden text-gray-600 focus:outline-none">
                         <i class="fa-solid fa-bars text-2xl"></i>
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Menú Móvil (Oculto por defecto) -->
-        <div id="mobile-menu" class="hidden md:hidden bg-industrial-800 border-t border-gray-700">
-            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="#inicio" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-industrial-700 hover:text-industrial-accent">Inicio</a>
-                <a href="#nosotros" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-industrial-700 hover:text-industrial-accent">Nosotros</a>
-                <a href="#servicios" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-industrial-700 hover:text-industrial-accent">Servicios</a>
-                <a href="#proyectos" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-industrial-700 hover:text-industrial-accent">Proyectos</a>
-                <a href="#contacto" class="block px-3 py-2 rounded-md text-base font-medium text-industrial-accent font-bold">Cotizar ahora</a>
+        <!-- Menú Móvil -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100">
+            <div class="px-4 pt-2 pb-4 space-y-1">
+                <a href="#inicio" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-brand-500 hover:bg-brand-50 rounded-md">Inicio</a>
+                <a href="#menu" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-brand-500 hover:bg-brand-50 rounded-md">Nuestro Menú</a>
+                <a href="#ubicacion" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-brand-500 hover:bg-brand-50 rounded-md">Ubicación</a>
             </div>
         </div>
     </nav>
 
-    <!-- Sección Hero -->
-    <section id="inicio" class="hero-bg h-screen flex items-center justify-center pt-20">
-        <div class="text-center px-4 max-w-4xl mx-auto">
-            <span class="text-industrial-accent font-bold tracking-widest uppercase mb-4 block">Trabajos a Medida y Calidad</span>
-            <h2 class="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight">
-                Tu Taller de Confianza en <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-industrial-accent">Herrería y Soldadura</span>
-            </h2>
-            <p class="text-gray-300 text-lg md:text-xl mb-10 max-w-2xl mx-auto">
-                Fabricamos e instalamos puertas enrollables, ventanas, pasamanos, techos, soportes para tanques y realizamos trabajos de herrería en general para tu hogar o negocio.
-            </p>
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="#servicios" class="bg-industrial-accent hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-md transition duration-300 transform hover:scale-105 shadow-lg">
-                    Nuestros Servicios
-                </a>
-                <a href="#contacto" class="bg-transparent border-2 border-white hover:border-industrial-accent hover:text-industrial-accent text-white font-bold py-3 px-8 rounded-md transition duration-300">
-                    Solicitar Presupuesto
+    <!-- Header / Hero Section -->
+    <header id="inicio" class="pt-24 pb-12 md:pt-32 md:pb-20 bg-brand-50">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col-reverse md:flex-row items-center gap-8 md:gap-12">
+            <div class="w-full md:w-1/2 text-center md:text-left">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-4">
+                    Comida deliciosa,<br>
+                    <span class="text-brand-500">sin complicaciones.</span>
+                </h1>
+                <p class="text-lg text-gray-600 mb-8 max-w-md mx-auto md:mx-0">
+                    Ingredientes frescos, recetas caseras y un sabor que te hará volver. Pide ahora o visítanos.
+                </p>
+                <a href="#menu" class="inline-block bg-brand-500 text-white font-semibold px-8 py-3 rounded-full hover:bg-brand-600 transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                    Ver el Menú
                 </a>
             </div>
-        </div>
-    </section>
-
-    <!-- Sección Nosotros -->
-    <section id="nosotros" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                <div class="relative">
-                    <img src="https://images.unsplash.com/photo-1516937941344-00b4e0337589?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Soldador trabajando en taller" class="rounded-lg shadow-2xl object-cover h-[500px] w-full">
-                    <div class="absolute -bottom-6 -right-6 bg-industrial-900 text-white p-6 rounded-lg shadow-xl border-l-4 border-industrial-accent hidden sm:block">
-                        <p class="text-4xl font-extrabold text-industrial-accent mb-1">100%</p>
-                        <p class="font-semibold text-sm uppercase tracking-wider">Trabajo<br>Garantizado</p>
-                    </div>
-                </div>
-                <div>
-                    <h3 class="text-industrial-accent font-bold uppercase tracking-wider mb-2">Sobre Nosotros</h3>
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-industrial-900 mb-6">Herrería y Soldadura Oscar</h2>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
-                        En <strong class="text-industrial-900">Taller Oscar</strong>, somos un negocio local dedicado a brindar soluciones prácticas y duraderas en metal. Nos enfocamos en atender las necesidades de hogares y pequeños comercios con un trato cercano y personalizado.
-                    </p>
-                    <p class="text-gray-600 mb-8 leading-relaxed">
-                        Ya sea que necesites asegurar tu local con una puerta enrollable, instalar un pasamanos seguro en casa, fabricar ventanas o colocar un soporte resistente para tu tanque de agua, trabajamos a medida cuidando cada detalle y acabado.
-                    </p>
-                    
-                    <ul class="space-y-4 mb-8">
-                        <li class="flex items-start">
-                            <i class="fa-solid fa-check-circle text-industrial-accent mt-1 mr-3 text-lg"></i>
-                            <span class="text-gray-700 font-medium">Atención personalizada y asesoría en cada proyecto de tu hogar o local.</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fa-solid fa-check-circle text-industrial-accent mt-1 mr-3 text-lg"></i>
-                            <span class="text-gray-700 font-medium">Acabados de calidad, pintura y estructuras 100% seguras.</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fa-solid fa-check-circle text-industrial-accent mt-1 mr-3 text-lg"></i>
-                            <span class="text-gray-700 font-medium">Precios justos y puntualidad en los tiempos de entrega.</span>
-                        </li>
-                    </ul>
-                </div>
+            <div class="w-full md:w-1/2">
+                <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Hamburguesa deliciosa" class="rounded-2xl shadow-2xl object-cover h-64 md:h-96 w-full">
             </div>
         </div>
-    </section>
+    </header>
 
-    <!-- Sección Servicios -->
-    <section id="servicios" class="py-20 bg-gray-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <h3 class="text-industrial-accent font-bold uppercase tracking-wider mb-2">Lo que hacemos</h3>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-industrial-900 mb-4">Nuestros Servicios</h2>
-                <p class="text-gray-600 text-lg">Soluciones a medida en herrería y soldadura para hacer tu vida más fácil y segura.</p>
+    <!-- Menú Section -->
+    <section id="menu" class="py-16 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">Nuestro Menú</h2>
+                <div class="w-16 h-1 bg-brand-500 mx-auto rounded"></div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Servicio 1 -->
-                <div class="bg-white p-8 rounded-lg shadow-md service-card text-center border border-gray-100">
-                    <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <i class="fa-solid fa-door-closed text-2xl text-industrial-accent"></i>
+            <!-- Grid de Platos -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Plato 1 -->
+                <div class="food-card bg-white border border-gray-100 rounded-2xl overflow-hidden group">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Hamburguesa Clásica" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                     </div>
-                    <h4 class="text-xl font-bold text-industrial-900 mb-3">Puertas y Ventanas</h4>
-                    <p class="text-gray-600 text-sm leading-relaxed mb-4">Fabricación e instalación de puertas enrollables para negocios, puertas de metal normales, rejas de seguridad y marcos para ventanas.</p>
-                </div>
-
-                <!-- Servicio 2 -->
-                <div class="bg-white p-8 rounded-lg shadow-md service-card text-center border border-gray-100">
-                    <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <i class="fa-solid fa-stairs text-2xl text-industrial-accent"></i>
-                    </div>
-                    <h4 class="text-xl font-bold text-industrial-900 mb-3">Pasamanos</h4>
-                    <p class="text-gray-600 text-sm leading-relaxed mb-4">Diseño y soldadura de pasamanos y barandas para escaleras, balcones y desniveles. Robustos, seguros y con excelentes acabados.</p>
-                </div>
-
-                <!-- Servicio 3 -->
-                <div class="bg-white p-8 rounded-lg shadow-md service-card text-center border border-gray-100">
-                    <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <i class="fa-solid fa-house-chimney text-2xl text-industrial-accent"></i>
-                    </div>
-                    <h4 class="text-xl font-bold text-industrial-900 mb-3">Techos</h4>
-                    <p class="text-gray-600 text-sm leading-relaxed mb-4">Estructuras ligeras y techos para patios, cocheras o tragaluces con coberturas de calamina, policarbonato o aluzinc.</p>
-                </div>
-
-                <!-- Servicio 4 -->
-                <div class="bg-white p-8 rounded-lg shadow-md service-card text-center border border-gray-100">
-                    <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <i class="fa-solid fa-tower-observation text-2xl text-industrial-accent"></i>
-                    </div>
-                    <h4 class="text-xl font-bold text-industrial-900 mb-3">Soportes de Tanque</h4>
-                    <p class="text-gray-600 text-sm leading-relaxed mb-4">Bases y torres metálicas reforzadas y hechas a la medida para soportar de manera segura tanques de agua de cualquier capacidad.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Sección Proyectos (Galería) -->
-    <section id="proyectos" class="py-20 bg-industrial-900 text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-12">
-                <div class="max-w-2xl">
-                    <h3 class="text-industrial-accent font-bold uppercase tracking-wider mb-2">Nuestro Portafolio</h3>
-                    <h2 class="text-3xl md:text-4xl font-extrabold mb-4">Trabajos Realizados</h2>
-                    <p class="text-gray-400 text-lg">Conoce la calidad de nuestros trabajos en hogares y comercios de nuestros clientes.</p>
-                </div>
-            </div>
-
-            <!-- Galería Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div class="relative group overflow-hidden rounded-lg h-72">
-                    <img src="https://images.unsplash.com/photo-1620025737526-777b7ce0ff43?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Puerta Enrollable" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                        <h4 class="text-xl font-bold text-industrial-accent">Puertas Enrollables</h4>
-                        <p class="text-sm text-gray-300">Instalación segura para locales comerciales</p>
-                    </div>
-                </div>
-                <div class="relative group overflow-hidden rounded-lg h-72">
-                    <img src="https://images.unsplash.com/photo-1505304918732-b7e6b0bcde04?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Techos de cochera" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                        <h4 class="text-xl font-bold text-industrial-accent">Techos para Patios</h4>
-                        <p class="text-sm text-gray-300">Cobertura con estructura metálica y policarbonato</p>
-                    </div>
-                </div>
-                <div class="relative group overflow-hidden rounded-lg h-72">
-                    <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Pasamanos y escaleras" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                        <h4 class="text-xl font-bold text-industrial-accent">Pasamanos de Escalera</h4>
-                        <p class="text-sm text-gray-300">Acabados estéticos y muy seguros para el hogar</p>
-                    </div>
-                </div>
-                <div class="relative group overflow-hidden rounded-lg h-72">
-                    <img src="https://images.unsplash.com/photo-1596489373970-1ce4371ddba4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Puerta Metálica Normal" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                        <h4 class="text-xl font-bold text-industrial-accent">Puertas y Rejas Metálicas</h4>
-                        <p class="text-sm text-gray-300">Diseños tradicionales para máxima protección</p>
-                    </div>
-                </div>
-                <div class="relative group overflow-hidden rounded-lg h-72 lg:col-span-2">
-                    <img src="https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Soldadura de soportes" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                        <h4 class="text-xl font-bold text-industrial-accent">Estructuras Reforzadas</h4>
-                        <p class="text-sm text-gray-300">Fabricación de bases para tanques de agua y estructuras de soporte</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Sección Contacto -->
-    <section id="contacto" class="py-20 bg-white relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="bg-white rounded-2xl shadow-2xl overflow-hidden -mt-32 relative z-10 border border-gray-100">
-                <div class="grid grid-cols-1 lg:grid-cols-5">
-                    
-                    <!-- Información de contacto -->
-                    <div class="bg-industrial-900 text-white p-10 lg:col-span-2">
-                        <h3 class="text-2xl font-bold mb-6">Información de Contacto</h3>
-                        <p class="text-gray-400 mb-8">¿Tienes un proyecto en mente? Contáctanos hoy mismo para recibir asesoría técnica y una cotización sin compromiso.</p>
-                        
-                        <div class="space-y-6">
-                            <div class="flex items-start">
-                                <div class="mt-1 bg-industrial-800 p-3 rounded-full text-industrial-accent">
-                                    <i class="fa-solid fa-location-dot w-5 text-center"></i>
-                                </div>
-                                <div class="ml-4">
-                                    <h4 class="text-sm font-semibold text-gray-300 uppercase tracking-wider">Ubicación</h4>
-                                    <p class="text-base">Av. Industrial 1234, Zona Norte<br>Ciudad, País</p>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-start">
-                                <div class="mt-1 bg-industrial-800 p-3 rounded-full text-industrial-accent">
-                                    <i class="fa-solid fa-phone w-5 text-center"></i>
-                                </div>
-                                <div class="ml-4">
-                                    <h4 class="text-sm font-semibold text-gray-300 uppercase tracking-wider">Teléfonos</h4>
-                                    <p class="text-base">+123 456 7890<br>+098 765 4321</p>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-start">
-                                <div class="mt-1 bg-industrial-800 p-3 rounded-full text-industrial-accent">
-                                    <i class="fa-solid fa-envelope w-5 text-center"></i>
-                                </div>
-                                <div class="ml-4">
-                                    <h4 class="text-sm font-semibold text-gray-300 uppercase tracking-wider">Correo Electrónico</h4>
-                                    <p class="text-base">cotizaciones@estructurasoscar.com<br>info@estructurasoscar.com</p>
-                                </div>
-                            </div>
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-lg font-bold text-gray-900">Hamburguesa Clásica</h3>
+                            <span class="text-brand-600 font-bold text-lg">S/ 18.00</span>
                         </div>
-
-                        <div class="mt-12">
-                            <h4 class="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-4">Síguenos</h4>
-                            <div class="flex space-x-4">
-                                <a href="#" class="w-10 h-10 rounded-full bg-industrial-800 flex items-center justify-center hover:bg-industrial-accent transition-colors"><i class="fa-brands fa-facebook-f"></i></a>
-                                <a href="#" class="w-10 h-10 rounded-full bg-industrial-800 flex items-center justify-center hover:bg-industrial-accent transition-colors"><i class="fa-brands fa-instagram"></i></a>
-                                <a href="#" class="w-10 h-10 rounded-full bg-industrial-800 flex items-center justify-center hover:bg-industrial-accent transition-colors"><i class="fa-brands fa-whatsapp"></i></a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Formulario -->
-                    <div class="p-10 lg:col-span-3">
-                        <h3 class="text-2xl font-bold text-industrial-900 mb-6">Envíanos un mensaje</h3>
-                        <form action="#" method="POST" class="space-y-6" onsubmit="event.preventDefault(); alert('¡Gracias por tu mensaje! Nos pondremos en contacto contigo a la brevedad.');">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                <div>
-                                    <label for="nombre" class="block text-sm font-medium text-gray-700 mb-1">Nombre o Empresa</label>
-                                    <input type="text" id="nombre" name="nombre" class="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-industrial-accent focus:border-industrial-accent outline-none transition" required placeholder="Ej. Juan Pérez">
-                                </div>
-                                <div>
-                                    <label for="telefono" class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
-                                    <input type="tel" id="telefono" name="telefono" class="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-industrial-accent focus:border-industrial-accent outline-none transition" required placeholder="Tu número de contacto">
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
-                                <input type="email" id="email" name="email" class="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-industrial-accent focus:border-industrial-accent outline-none transition" required placeholder="tu@correo.com">
-                            </div>
-
-                            <div>
-                                <label for="servicio" class="block text-sm font-medium text-gray-700 mb-1">Servicio de Interés</label>
-                                <select id="servicio" name="servicio" class="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-industrial-accent focus:border-industrial-accent outline-none transition bg-white">
-                                    <option value="">Selecciona una opción...</option>
-                                    <option value="puertas">Puertas (Enrollables / Normales) y Ventanas</option>
-                                    <option value="pasamanos">Pasamanos y Barandas</option>
-                                    <option value="techos">Techos y Coberturas</option>
-                                    <option value="soportes">Soportes para Tanques de Agua</option>
-                                    <option value="otro">Otro Trabajo de Soldadura</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label for="mensaje" class="block text-sm font-medium text-gray-700 mb-1">Detalles de tu proyecto</label>
-                                <textarea id="mensaje" name="mensaje" rows="4" class="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-industrial-accent focus:border-industrial-accent outline-none transition resize-none" required placeholder="Cuéntanos un poco sobre las medidas o la idea que tienes en mente..."></textarea>
-                            </div>
-
-                            <button type="submit" class="w-full bg-industrial-900 hover:bg-industrial-800 text-white font-bold py-4 px-6 rounded-md transition duration-300 flex justify-center items-center gap-2">
-                                <span>Enviar Cotización</span>
-                                <i class="fa-solid fa-paper-plane"></i>
-                            </button>
-                        </form>
+                        <p class="text-gray-500 text-sm mb-4 line-clamp-2">Carne de res 150g, queso cheddar, lechuga fresca, tomate y nuestra salsa secreta.</p>
+                        <button onclick="agregarAlCarrito('Hamburguesa Clásica')" class="w-full py-2 border-2 border-brand-500 text-brand-600 font-semibold rounded-lg hover:bg-brand-500 hover:text-white transition">
+                            Agregar al carrito
+                        </button>
                     </div>
                 </div>
+
+                <!-- Plato 2 -->
+                <div class="food-card bg-white border border-gray-100 rounded-2xl overflow-hidden group">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Pizza Pepperoni" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                    </div>
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-lg font-bold text-gray-900">Pizza Pepperoni</h3>
+                            <span class="text-brand-600 font-bold text-lg">S/ 25.00</span>
+                        </div>
+                        <p class="text-gray-500 text-sm mb-4 line-clamp-2">Masa artesanal, salsa de tomate de la casa, abundante mozzarella y pepperoni.</p>
+                        <button onclick="agregarAlCarrito('Pizza Pepperoni')" class="w-full py-2 border-2 border-brand-500 text-brand-600 font-semibold rounded-lg hover:bg-brand-500 hover:text-white transition">
+                            Agregar al carrito
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Plato 3 -->
+                <div class="food-card bg-white border border-gray-100 rounded-2xl overflow-hidden group">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Alitas BBQ" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                    </div>
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-lg font-bold text-gray-900">Alitas BBQ (6 und)</h3>
+                            <span class="text-brand-600 font-bold text-lg">S/ 15.00</span>
+                        </div>
+                        <p class="text-gray-500 text-sm mb-4 line-clamp-2">Crujientes alitas bañadas en salsa BBQ dulce y ahumada. Incluye papas fritas.</p>
+                        <button onclick="agregarAlCarrito('Alitas BBQ')" class="w-full py-2 border-2 border-brand-500 text-brand-600 font-semibold rounded-lg hover:bg-brand-500 hover:text-white transition">
+                            Agregar al carrito
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Plato 4 -->
+                <div class="food-card bg-white border border-gray-100 rounded-2xl overflow-hidden group">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Ensalada Fresca" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                    </div>
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-lg font-bold text-gray-900">Ensalada Fresca</h3>
+                            <span class="text-brand-600 font-bold text-lg">S/ 12.00</span>
+                        </div>
+                        <p class="text-gray-500 text-sm mb-4 line-clamp-2">Mix de lechugas, tomate cherry, palta, crutones y aliño de la casa.</p>
+                        <button onclick="agregarAlCarrito('Ensalada Fresca')" class="w-full py-2 border-2 border-brand-500 text-brand-600 font-semibold rounded-lg hover:bg-brand-500 hover:text-white transition">
+                            Agregar al carrito
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Plato 5 -->
+                <div class="food-card bg-white border border-gray-100 rounded-2xl overflow-hidden group">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Pizza Hawaiana" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                    </div>
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-lg font-bold text-gray-900">Pizza Hawaiana</h3>
+                            <span class="text-brand-600 font-bold text-lg">S/ 24.00</span>
+                        </div>
+                        <p class="text-gray-500 text-sm mb-4 line-clamp-2">El clásico controversial: jamón ahumado, trozos de piña fresca y mozzarella.</p>
+                        <button onclick="agregarAlCarrito('Pizza Hawaiana')" class="w-full py-2 border-2 border-brand-500 text-brand-600 font-semibold rounded-lg hover:bg-brand-500 hover:text-white transition">
+                            Agregar al carrito
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Plato 6 -->
+                <div class="food-card bg-white border border-gray-100 rounded-2xl overflow-hidden group">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1551024601-bec78aea704b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Postre" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                    </div>
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-lg font-bold text-gray-900">Torta de Chocolate</h3>
+                            <span class="text-brand-600 font-bold text-lg">S/ 10.00</span>
+                        </div>
+                        <p class="text-gray-500 text-sm mb-4 line-clamp-2">Porción generosa de torta húmeda de chocolate con fudge artesanal.</p>
+                        <button onclick="agregarAlCarrito('Torta de Chocolate')" class="w-full py-2 border-2 border-brand-500 text-brand-600 font-semibold rounded-lg hover:bg-brand-500 hover:text-white transition">
+                            Agregar al carrito
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-industrial-800 text-gray-400 py-8 border-t border-gray-700">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
-            <div class="flex items-center gap-2 mb-4 md:mb-0">
-                <i class="fa-solid fa-helmet-safety text-industrial-accent text-xl"></i>
-                <span class="font-bold text-white uppercase tracking-wider text-sm">Oscar Estructuras Metálicas</span>
+    <!-- Ubicación y Footer (Simple) -->
+    <section id="ubicacion" class="bg-gray-900 text-white py-12">
+        <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+            
+            <!-- Marca -->
+            <div>
+                <a href="#" class="flex items-center justify-center md:justify-start gap-2 text-brand-500 mb-4">
+                    <i class="fa-solid fa-utensils text-2xl"></i>
+                    <span class="font-bold text-xl tracking-tight text-white">El Buen Sabor</span>
+                </a>
+                <p class="text-gray-400 text-sm">Preparando momentos deliciosos todos los días. Sin complicaciones, solo buena comida.</p>
             </div>
-            <p class="text-sm text-center md:text-left">
-                &copy; <span id="year"></span> Todos los derechos reservados.
-            </p>
-            <div class="mt-4 md:mt-0 text-sm">
-                Diseñado con pasión para construcciones sólidas.
-            </div>
-        </div>
-    </footer>
 
-    <!-- Script para interactividad básica -->
+            <!-- Horarios -->
+            <div>
+                <h4 class="font-bold text-lg mb-4 text-brand-500">Horarios</h4>
+                <p class="text-gray-300 text-sm mb-1">Lunes a Viernes: 12:00 PM - 10:00 PM</p>
+                <p class="text-gray-300 text-sm mb-1">Sábados: 12:00 PM - 11:30 PM</p>
+                <p class="text-gray-300 text-sm">Domingos: Cerrado</p>
+            </div>
+
+            <!-- Contacto -->
+            <div>
+                <h4 class="font-bold text-lg mb-4 text-brand-500">Contacto</h4>
+                <p class="text-gray-300 text-sm mb-2"><i class="fa-solid fa-location-dot mr-2"></i> Av. Principal 456, Centro</p>
+                <p class="text-gray-300 text-sm mb-2"><i class="fa-solid fa-phone mr-2"></i> +51 987 654 321</p>
+                <div class="flex gap-4 mt-4 justify-center md:justify-start">
+                    <a href="#" class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand-500 transition"><i class="fa-brands fa-whatsapp"></i></a>
+                    <a href="#" class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand-500 transition"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand-500 transition"><i class="fa-brands fa-facebook-f"></i></a>
+                </div>
+            </div>
+
+        </div>
+        <div class="max-w-6xl mx-auto px-4 mt-10 pt-6 border-t border-gray-800 text-center text-sm text-gray-500">
+            &copy; <span id="year"></span> El Buen Sabor. Todos los derechos reservados.
+        </div>
+    </section>
+
+    <!-- Notificación flotante (Toast) -->
+    <div id="toast">✅ ¡Agregado al carrito!</div>
+
+    <!-- Scripts (Lógica Simple) -->
     <script>
-        // Actualizar año del footer
+        // Actualizar año automáticamente
         document.getElementById('year').textContent = new Date().getFullYear();
 
         // Menú móvil toggle
@@ -381,24 +300,38 @@
             menu.classList.toggle('hidden');
         });
 
-        // Cerrar menú móvil al hacer clic en un enlace
+        // Lógica simple para simular el carrito
+        let cantidadCarrito = 0;
+        const cartCountElement = document.getElementById('cart-count');
+        const toast = document.getElementById('toast');
+
+        function agregarAlCarrito(producto) {
+            // Aumentar contador
+            cantidadCarrito++;
+            cartCountElement.textContent = cantidadCarrito;
+            
+            // Pequeña animación en el número
+            cartCountElement.classList.add('scale-125');
+            setTimeout(() => {
+                cartCountElement.classList.remove('scale-125');
+            }, 200);
+
+            // Mostrar notificación
+            toast.textContent = `✅ ${producto} agregado al carrito`;
+            toast.classList.add('show');
+            
+            // Ocultar notificación después de 2.5 segundos
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // Cerrar menú móvil al hacer clic en un enlace (para mejor experiencia en celulares)
         const mobileLinks = menu.querySelectorAll('a');
         mobileLinks.forEach(link => {
             link.addEventListener('click', () => {
                 menu.classList.add('hidden');
             });
-        });
-
-        // Cambiar el fondo del navbar al hacer scroll
-        const navbar = document.querySelector('nav');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                navbar.classList.add('shadow-xl', 'bg-industrial-900/95', 'backdrop-blur-sm');
-                navbar.classList.remove('bg-industrial-900');
-            } else {
-                navbar.classList.remove('shadow-xl', 'bg-industrial-900/95', 'backdrop-blur-sm');
-                navbar.classList.add('bg-industrial-900');
-            }
         });
     </script>
 </body>
